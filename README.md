@@ -42,8 +42,8 @@ Partition and format the USB Drive (e.g. using AOMEI Partition Assistant or Linu
 
 Via web UI:
 - Go to **Administration → System**
-- Enable **JFFS custom scripts and configs** → `Yes`
-- Enable **SSH access** → `LAN only` or `LAN & WAN`
+- Enable **Enable JFFS custom scripts** → `Yes`
+- Enable **Enable SSH** → `LAN only` or `LAN & WAN`
 
 ### 3. Create post-mount Script
 
