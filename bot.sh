@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Developed by playmax92
+
 . /opt/telegram-bot/telegram.env
 if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
     echo "Нет данных Telegram (TOKEN или CHAT_ID)"
