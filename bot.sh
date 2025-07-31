@@ -56,21 +56,21 @@ get_ram() {
     RAM_USED=$(free | awk '/Mem:/ {printf "%.2f", $3/$2*100}')
     RAM_FREE=$(free | awk '/Mem:/ {printf "%.2f", $4/$2*100}')
     SWAP_USED=$(free | awk '/Swap:/ {if ($2==0) print "0.00"; else printf "%.2f", $3/$2*100}')
-    printf "🧠 <b>RAM</b>\nUsed: %s%%\nFree: %s%%\nSwap Used: %s%%" "$RAM_USED" "$RAM_FREE" "$SWAP_USED"
+    printf "🧠 <b>RAM</b>\n- Used: %s%%\n- Free: %s%%\n- Swap Used: %s%%" "$RAM_USED" "$RAM_FREE" "$SWAP_USED"
 }
 
 get_cpu() {
     TEMP_CPU_VAL=$(cat /sys/class/thermal/thermal_zone0/temp | awk '{print int($1/1000)}')
     TEMP_CPU="${TEMP_CPU_VAL}º"
     LOAD=$(cut -d " " -f1-3 /proc/loadavg)
-    printf "🖥 <b>CPU</b>\nLoad: %s\nTemp: %s" "$LOAD" "$TEMP_CPU"
+    printf "🖥 <b>CPU</b>\n- Load: %s\n- Temp: %s" "$LOAD" "$TEMP_CPU"
 }
 
 get_name() {
     MODEL=$(nvram get wps_device_name)
     FW=$(nvram get webs_state_info_am)
     [ -z "$FW" ] && FW=$(nvram get firmver)
-    printf "📡 <b>Router</b>\nModel: %s\nFirmware: %s" "$MODEL" "$FW"
+    printf "📡 <b>Router</b>\n- Model: %s\n- Firmware: %s" "$MODEL" "$FW"
 }
 
 get_clients() {
