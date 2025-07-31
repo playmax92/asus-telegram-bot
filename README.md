@@ -126,4 +126,4 @@ No additional startup scripts are required.
 
 ## 📝 License
 
-Distributed under the MIT License. See `LICENSE` file for details.
+Distributed under the MIT License. See [LICENSE](https://raw.githubusercontent.com/playmax92/asus-telegram-bot/refs/heads/main/LICENSE?token=GHSAT0AAAAAADICBVU2DJUXZZ44H3QEY5OC2ELPQFA) file for details.
