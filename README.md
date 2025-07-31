@@ -3,7 +3,17 @@
 
 # Telegram Bot for ASUS Routers (FreshTomato)
 
+<img src="https://github.com/playmax92/asus-telegram-bot/blob/0cf98a1d3b3654829f898a415b3a070cbbff7262/AX3000_V2.png" style="height: 1000px" /></a>
+
 A lightweight shell-based Telegram bot to monitor your ASUS router running FreshTomato firmware.
+
+---
+
+## ✅ Tested Devices
+
+| Router              | Firmware           |
+|---------------------|--------------------|
+| ASUS TUF AX3000 V2  | FreshTomato 3.0.0.4.2025_3 |
 
 ---
 
@@ -112,13 +122,6 @@ No additional startup scripts are required.
 
 ---
 
-## ✅ Tested Devices
-
-| Router              | Firmware           |
-|---------------------|--------------------|
-| ASUS TUF AX3000 V2  | FreshTomato 2025.3 |
-
----
 
 ## 📝 License
 
