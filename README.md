@@ -30,7 +30,7 @@ A lightweight shell-based Telegram bot to monitor your ASUS router running Fresh
 
 ### 1. Prepare the USB Drive
 
-Partition and format the USB stick (e.g. using AOMEI Partition Assistant or Linux `gparted`):
+Partition and format the USB Drive (e.g. using AOMEI Partition Assistant or Linux `gparted`):
 
 | Partition | Size     | Mount Point   | Format |
 |-----------|----------|----------------|--------|
