@@ -41,7 +41,7 @@ get_status() {
         BANNER="❄️ $MODEL | CPU: $TEMP_CPU ❄️"
     fi
 
-    UPTIME=$(uptime | sed 's/.*up \([^,]*\),.*/\1/')
+    UPTIME=$(uptime|sed 's/.*\([0-9]\+ days\), \([0-9]\+\):\([0-9]\+\).*/\1, \2 hours, \3 minutes/')
     CPU_LOAD=$(cut -d " " -f1-3 /proc/loadavg)
     RAM_USED_PERCENTAGE=$(free | awk '/Mem:/ {printf "%.2f", $3/$2*100}')
     RAM_FREE_PERCENTAGE=$(free | awk '/Mem:/ {printf "%.2f", $4/$2*100}')
