@@ -78,9 +78,10 @@ Create the bot folder:
 mkdir -p /opt/telegram-bot
 ```
 
-Add these two files to `/opt/telegram-bot/`:
-`bot.sh`
-`telegram.env` with your credentials:
+Add these two files to `/opt/telegram-bot/`: `bot.sh` and `telegram.env`
+
+Don't forget to put your credentials in the file `telegram.env`
+
 ```env
 TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
 TELEGRAM_CHAT_ID=123456789
