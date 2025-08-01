@@ -55,7 +55,6 @@ get_status() {
         BANNER="❄️ $MODEL | CPU: $TEMP_CPU ❄️"
     fi
 
-    # uptime without load average
     UPTIME_SECONDS=$(cut -d' ' -f1 /proc/uptime | cut -d'.' -f1)
     DAYS=$((UPTIME_SECONDS/86400))
     HOURS=$(( (UPTIME_SECONDS%86400)/3600 ))
@@ -101,8 +100,8 @@ get_name() {
 get_clients() {
     IF24=$(nvram get wl0_ifname)
     IF5=$(nvram get wl1_ifname)
+
     MAC_24=$(wl -i $IF24 assoclist | awk '{print $2}')
-    MAC_5=$(wl -i $IF5 assoclist | awk '{print $2}')
     WIFI24_LIST=""
     for mac in $MAC_24; do
         HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
@@ -111,6 +110,8 @@ get_clients() {
         WIFI24_LIST="${WIFI24_LIST}- IP: $IP | MAC: $mac | Host: $HOST
 "
     done
+
+    MAC_5=$(wl -i $IF5 assoclist | awk '{print $2}')
     WIFI5_LIST=""
     for mac in $MAC_5; do
         HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
@@ -119,16 +120,20 @@ get_clients() {
         WIFI5_LIST="${WIFI5_LIST}- IP: $IP | MAC: $mac | Host: $HOST
 "
     done
+
     LAN_LIST=""
     for mac in $(awk '/0x2/ {print $4}' /proc/net/arp | grep -v "00:00:00:00:00:00"); do
         if ! echo "$MAC_24 $MAC_5" | grep -qi "$mac"; then
             IP=$(awk -v m="$mac" '$4 == m {print $1}' /proc/net/arp)
-            HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
-            [ "$HOST" = "*" ] && HOST="Unknown"
-            LAN_LIST="${LAN_LIST}- IP: $IP | MAC: $mac | Host: $HOST
+            if ping -c1 -W1 "$IP" >/dev/null 2>&1; then
+                HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
+                [ "$HOST" = "*" ] && HOST="Unknown"
+                LAN_LIST="${LAN_LIST}- IP: $IP | MAC: $mac | Host: $HOST
 "
+            fi
         fi
     done
+
     if [ -n "$LAN_LIST" ]; then
         printf "👥 <b>Clients</b>\n\n<b>Wi-Fi 2.4 GHz:</b>\n%s\n<b>Wi-Fi 5 GHz:</b>\n%s\n<b>LAN:</b>\n%s" \
             "$WIFI24_LIST" "$WIFI5_LIST" "$LAN_LIST"
