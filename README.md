@@ -120,11 +120,32 @@ chmod 600 /opt/telegram-bot/telegram.env
 
 ---
 
-## 🔁 Auto-start on Boot
+## ✅ Auto-start on Boot
 
 When the USB is mounted, `post-mount` will automatically run and launch the bot in the background.  
 No additional startup scripts are required.
 
+---
+
+## 🔁 Restarting the Telegram Router Bot
+
+Sometimes you may need to restart the bot to apply updates or test changes.  
+Here are the commands you can use:
+
+1. Stop all running bot processes
+```bash
+killall bot.sh 2>/dev/null
+```
+
+2. Start the bot in the background
+```bash
+cd /opt/telegram-bot && sh bot.sh &
+```
+
+3. Verify that the bot is running
+```bash
+ps | grep bot.sh
+```
 ---
 
 ## 📜 Telegram Commands
