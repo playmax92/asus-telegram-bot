@@ -151,7 +151,7 @@ get_log() {
 
 do_reboot() {
     send_msg "🔄 Router is going to reboot now..."
-    reboot &
+    #reboot &
 }
 
 get_help() {
