@@ -144,7 +144,7 @@ get_clients() {
 }
 
 get_log() {
-    LOG=$(tail -n 20 /tmp/syslog.log 2>/dev/null)
+    LOG=$(tail -n 10 /tmp/syslog.log 2>/dev/null)
     [ -z "$LOG" ] && LOG="No logs available"
     printf "📜 <b>Logs</b>\n%s" "$LOG"
 }
