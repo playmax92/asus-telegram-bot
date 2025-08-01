@@ -166,7 +166,8 @@ while true; do
     [ -n "$NEW_OFFSET" ] && echo $((NEW_OFFSET+1)) > "$OFFSET_FILE"
     COMMAND=$(echo "$UPDATES" | grep -o '"text":"[^"]*"' | tail -1 | cut -d: -f2 | tr -d '"')
     case "$COMMAND" in
-        "/start") send_msg $'🤖 Router bot started and ready. \nUse /help to see available commands.' ;;
+        "/start") send_msg "🤖 Router bot started and ready.
+Use /help to see available commands." ;;
         "/status") send_msg "$(get_status)" ;;
         "/ram") send_msg "$(get_ram)" ;;
         "/cpu") send_msg "$(get_cpu)" ;;
