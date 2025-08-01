@@ -146,7 +146,8 @@ get_clients() {
 get_log() {
     LOG=$(tail -n 10 /tmp/syslog.log 2>/dev/null)
     [ -z "$LOG" ] && LOG="No logs available"
-    printf "📜 <b>Logs</b>\n%s" "$LOG"
+    ESCAPED=$(echo "$LOG" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
+    printf "📜 <b>Logs</b>\n%s" "$ESCAPED"
 }
 
 do_reboot() {
