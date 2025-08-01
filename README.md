@@ -80,6 +80,21 @@ mkdir -p /opt/telegram-bot
 
 Add these two files to `/opt/telegram-bot/`: `bot.sh` and `telegram.env`
 
+Go to bot directory
+```sh
+cd /opt/telegram-bot
+```
+
+Download bot.sh
+```sh
+wget https://raw.githubusercontent.com/playmax92/asus-telegram-bot/refs/heads/main/bot.sh -O bot.sh
+```
+
+Download telegram.env
+```sh
+wget https://raw.githubusercontent.com/playmax92/asus-telegram-bot/refs/heads/main/telegram.env -O telegram.env
+```
+
 Don't forget to put your credentials in the file `telegram.env`
 
 ```env
