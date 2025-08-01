@@ -150,6 +150,8 @@ ps | grep bot.sh
 
 ## 📜 Telegram Commands
 
+<img src="https://github.com/playmax92/asus-telegram-bot/blob/b0bad29f20ec6fc509f173f4dc81743eabfe7f9a/Telegram_Output.jpg" style="height: 1000px" /></a>
+
 | Command      | Description              |
 |--------------|--------------------------|
 | `/status`    | Full router status       |
