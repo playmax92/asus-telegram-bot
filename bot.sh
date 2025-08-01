@@ -20,7 +20,7 @@ send_msg() {
     curl -s -X POST "$API/sendMessage" \
         -d chat_id="$TELEGRAM_CHAT_ID" \
         -d parse_mode="HTML" \
-        --data-urlencode text="$TEXT" >/dev/null
+        -d text="$TEXT" >/dev/null
 }
 
 check_wan_ip_change() {
@@ -33,16 +33,13 @@ check_wan_ip_change() {
     fi
 }
 
-send_initial_wan_ip() {
-    CURRENT_IP=$(nvram get wan0_ipaddr)
-    echo "$CURRENT_IP" > "$WAN_IP_FILE"
-    [ -n "$CURRENT_IP" ] && send_msg "🌐 <b>Current WAN IP</b>: $CURRENT_IP"
-}
-
 get_status() {
     MODEL=$(nvram get wps_device_name)
-    FW=$(nvram get webs_state_info_am)
-    [ -z "$FW" ] && FW=$(nvram get firmver)
+    FW="${MODEL} Firmware"
+    FW_MAIN=$(nvram get firmver)
+    FW_BUILD=$(nvram get buildno)
+    FW="${FW_MAIN}.${FW_BUILD}"
+
     WAN_IP=$(nvram get wan0_ipaddr)
     LAN_IP=$(nvram get lan_ipaddr)
     SSID_24=$(nvram get wl0_ssid)
@@ -62,15 +59,14 @@ get_status() {
         BANNER="❄️ $MODEL | CPU: $TEMP_CPU ❄️"
     fi
 
-    UPTIME=$(uptime | sed 's/.*\([0-9]\+ days\), \([0-9]\+\):\([0-9]\+\).*/\1, \2 hours, \3 minutes/')
-    CPU_LOAD=$(cut -d " " -f1-3 /proc/loadavg)
+    UPTIME=$(uptime -p)
     RAM_USED_PERCENTAGE=$(free | awk '/Mem:/ {printf "%.2f", $3/$2*100}')
     RAM_FREE_PERCENTAGE=$(free | awk '/Mem:/ {printf "%.2f", $4/$2*100}')
     SWAP_USED=$(free | awk '/Swap:/ {if ($2==0) print "0.00"; else printf "%.2f", $3/$2*100}')
     SIGN_DATE=$(nvram get bwdpi_sig_ver)
 
-    printf "<b>%s</b>\n\n📊 <b>Status</b>\n- CPU Temp: %s\n- WLAN 2.4 Temp: %s\n- WLAN 5 Temp: %s\n- Uptime: %s\n- Load CPU: %s\n- RAM Used: %s%% / Free: %s%%\n- Swap Used: %s%%\n\n📃 <b>Info</b>\n- Model: %s\n- Firmware: %s\n- SSID 2.4GHz: %s\n- SSID 5GHz: %s\n- IP WAN: %s\n- IP LAN: %s\n- Trend Micro sign: %s" \
-        "$BANNER" "$TEMP_CPU" "$TEMP_WIFI24" "$TEMP_WIFI5" "$UPTIME" "$CPU_LOAD" "$RAM_USED_PERCENTAGE" "$RAM_FREE_PERCENTAGE" "$SWAP_USED" "$MODEL" "$FW" "$SSID_24" "$SSID_5" "$WAN_IP" "$LAN_IP" "$SIGN_DATE"
+    printf "<b>%s</b>\n\n📊 <b>Status</b>\n- CPU Temp: %s\n- WLAN 2.4 Temp: %s\n- WLAN 5 Temp: %s\n- Uptime: %s\n- RAM Used: %s%% / Free: %s%%\n- Swap Used: %s%%\n\n📃 <b>Info</b>\n- Model: %s\n- Firmware: %s\n- SSID 2.4GHz: %s\n- SSID 5GHz: %s\n- IP WAN: %s\n- IP LAN: %s\n- Trend Micro sign: %s" \
+        "$BANNER" "$TEMP_CPU" "$TEMP_WIFI24" "$TEMP_WIFI5" "$UPTIME" "$RAM_USED_PERCENTAGE" "$RAM_FREE_PERCENTAGE" "$SWAP_USED" "$MODEL" "$FW" "$SSID_24" "$SSID_5" "$WAN_IP" "$LAN_IP" "$SIGN_DATE"
 }
 
 get_ram() {
@@ -89,19 +85,47 @@ get_cpu() {
 
 get_name() {
     MODEL=$(nvram get wps_device_name)
-    FW=$(nvram get webs_state_info_am)
-    [ -z "$FW" ] && FW=$(nvram get firmver)
+    FW_MAIN=$(nvram get firmver)
+    FW_BUILD=$(nvram get buildno)
+    FW="${FW_MAIN}.${FW_BUILD}"
     printf "📡 <b>Router</b>\n- Model: %s\n- Firmware: %s" "$MODEL" "$FW"
 }
 
 get_clients() {
-    if [ -f /var/lib/misc/dnsmasq.leases ]; then
-        CLIENTS=$(awk '{host=$4; if(host=="*") host="Unknown"; printf "- IP: %s | MAC: %s | Host: %s\n",$3,$2,host}' /var/lib/misc/dnsmasq.leases)
-    else
-        CLIENTS="No client data available"
-    fi
-    [ -z "$CLIENTS" ] && CLIENTS="No clients connected"
-    printf "👥 <b>Clients</b>\n%s" "$CLIENTS"
+    IF24=$(nvram get wl0_ifname)
+    IF5=$(nvram get wl1_ifname)
+
+    MAC_24=$(wl -i $IF24 assoclist | awk '{print $2}')
+    MAC_5=$(wl -i $IF5 assoclist | awk '{print $2}')
+
+    WIFI24_LIST=""
+    for mac in $MAC_24; do
+        HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
+        [ "$HOST" = "*" ] && HOST="Unknown"
+        IP=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $3}')
+        WIFI24_LIST="$WIFI24_LIST- IP: $IP | MAC: $mac | Host: $HOST\n"
+    done
+
+    WIFI5_LIST=""
+    for mac in $MAC_5; do
+        HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
+        [ "$HOST" = "*" ] && HOST="Unknown"
+        IP=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $3}')
+        WIFI5_LIST="$WIFI5_LIST- IP: $IP | MAC: $mac | Host: $HOST\n"
+    done
+
+    LAN_LIST=""
+    for mac in $(cat /proc/net/arp | awk 'NR>1 {print $4}' | grep -v "00:00:00:00:00:00"); do
+        if ! echo "$MAC_24 $MAC_5" | grep -qi "$mac"; then
+            IP=$(grep -i "$mac" /proc/net/arp | awk '{print $1}')
+            HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
+            [ "$HOST" = "*" ] && HOST="Unknown"
+            LAN_LIST="$LAN_LIST- IP: $IP | MAC: $mac | Host: $HOST\n"
+        fi
+    done
+
+    printf "👥 <b>Clients</b>\n\n<b>Wi-Fi 2.4 GHz:</b>\n%s\n<b>Wi-Fi 5 GHz:</b>\n%s\n<b>LAN:</b>\n%s" \
+        "$WIFI24_LIST" "$WIFI5_LIST" "$LAN_LIST"
 }
 
 get_log() {
@@ -111,15 +135,13 @@ get_log() {
 }
 
 do_reboot() {
-    printf "🔄 Rebooting..."
+    send_msg "🔄 Router is going to reboot now..."
     reboot &
 }
 
 get_help() {
     printf "/start - Welcome message\n/status - Full status\n/ram - Memory\n/cpu - CPU Info\n/name - Model and Firmware\n/clients - Connected clients\n/log - Last log entries\n/reboot - Reboot router\n/help - This help"
 }
-
-send_initial_wan_ip
 
 while true; do
     check_wan_ip_change   # Check WAN IP changes
@@ -131,14 +153,14 @@ while true; do
 
     COMMAND=$(echo "$UPDATES" | grep -o '"text":"[^"]*"' | tail -1 | cut -d: -f2 | tr -d '"')
     case "$COMMAND" in
-        "/start") send_msg "🤖 Bot started.\nUse /help to see available commands." ;;
+        "/start") send_msg "🤖 Router bot started and ready.\nUse /help to see available commands." ;;
         "/status") send_msg "$(get_status)" ;;
         "/ram") send_msg "$(get_ram)" ;;
         "/cpu") send_msg "$(get_cpu)" ;;
         "/name") send_msg "$(get_name)" ;;
         "/clients") send_msg "$(get_clients)" ;;
         "/log") send_msg "$(get_log)" ;;
-        "/reboot") send_msg "$(do_reboot)" ;;
+        "/reboot") do_reboot ;;
         "/help") send_msg "$(get_help)" ;;
     esac
     sleep 2
