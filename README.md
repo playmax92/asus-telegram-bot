@@ -97,11 +97,6 @@ wget https://raw.githubusercontent.com/playmax92/asus-telegram-bot/refs/heads/ma
 
 Don't forget to put your credentials in the file `telegram.env`
 
-```env
-TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
-TELEGRAM_CHAT_ID=123456789
-```
-
 Convert possible Windows line endings:
 ```sh
 sed -i 's/\r$//' /opt/telegram-bot/bot.sh
@@ -116,6 +111,40 @@ chmod +x /opt/telegram-bot/bot.sh
 ```
 ```sh
 chmod 600 /opt/telegram-bot/telegram.env
+```
+
+---
+
+### Editing the `telegram.env` file
+
+After downloading the file, you need to insert your bot credentials:
+```env
+TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
+TELEGRAM_CHAT_ID=123456789
+```
+
+On the router, the only available text editor is **vi**.  
+To edit the file:
+```bash
+vi /opt/telegram-bot/telegram.env
+```
+
+**Basic vi commands:**
+- Press `i` to enter **INSERT** mode
+- Insert or modify the content:
+  ```env
+  TELEGRAM_BOT_TOKEN=YOUR_BOT_TOKEN
+  TELEGRAM_CHAT_ID=YOUR_CHAT_ID
+  ```
+- Press `Esc` to exit **INSERT** mode
+- Type `:wq` and press **Enter** to **save changes and quit**
+- To **exit without saving changes**:
+  - Press `Esc`
+  - Type `:q!` and press **Enter**
+
+Check the file content to make sure there are no extra spaces or hidden characters:
+```bash
+cat /opt/telegram-bot/telegram.env
 ```
 
 ---
