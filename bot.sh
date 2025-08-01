@@ -4,7 +4,7 @@
 
 . /opt/telegram-bot/telegram.env
 if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
-    echo "Нет данных Telegram (TOKEN или CHAT_ID)"
+    echo "No Telegram data (TOKEN or CHAT_ID)"
     exit 1
 fi
 
@@ -12,12 +12,31 @@ API="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}"
 OFFSET_FILE="/opt/telegram-bot/bot_offset"
 [ -f "$OFFSET_FILE" ] || echo 0 > "$OFFSET_FILE"
 
+WAN_IP_FILE="/opt/telegram-bot/wan_ip_last"
+[ -f "$WAN_IP_FILE" ] || echo "" > "$WAN_IP_FILE"
+
 send_msg() {
     TEXT="$1"
     curl -s -X POST "$API/sendMessage" \
         -d chat_id="$TELEGRAM_CHAT_ID" \
         -d parse_mode="HTML" \
         --data-urlencode text="$TEXT" >/dev/null
+}
+
+check_wan_ip_change() {
+    CURRENT_IP=$(nvram get wan0_ipaddr)
+    LAST_IP=$(cat "$WAN_IP_FILE")
+
+    if [ "$CURRENT_IP" != "$LAST_IP" ] && [ -n "$CURRENT_IP" ]; then
+        echo "$CURRENT_IP" > "$WAN_IP_FILE"
+        send_msg "🌐 <b>WAN IP changed</b>\nOld: $LAST_IP\nNew: $CURRENT_IP"
+    fi
+}
+
+send_initial_wan_ip() {
+    CURRENT_IP=$(nvram get wan0_ipaddr)
+    echo "$CURRENT_IP" > "$WAN_IP_FILE"
+    [ -n "$CURRENT_IP" ] && send_msg "🌐 <b>Current WAN IP</b>: $CURRENT_IP"
 }
 
 get_status() {
@@ -79,28 +98,32 @@ get_clients() {
     if [ -f /var/lib/misc/dnsmasq.leases ]; then
         CLIENTS=$(awk '{host=$4; if(host=="*") host="Unknown"; printf "- IP: %s | MAC: %s | Host: %s\n",$3,$2,host}' /var/lib/misc/dnsmasq.leases)
     else
-        CLIENTS="Нет данных о клиентах"
+        CLIENTS="No client data available"
     fi
-    [ -z "$CLIENTS" ] && CLIENTS="Нет клиентов"
+    [ -z "$CLIENTS" ] && CLIENTS="No clients connected"
     printf "👥 <b>Clients</b>\n%s" "$CLIENTS"
 }
 
 get_log() {
     LOG=$(tail -n 20 /jffs/syslog.log 2>/dev/null)
-    [ -z "$LOG" ] && LOG="Нет логов"
+    [ -z "$LOG" ] && LOG="No logs available"
     printf "📜 <b>Logs</b>\n%s" "$LOG"
 }
 
 do_reboot() {
-    printf "🔄 Перезагрузка..."
+    printf "🔄 Rebooting..."
     reboot &
 }
 
 get_help() {
-    printf "/status - Full status\n/ram - Memory\n/cpu - CPU Info\n/name - Model and Firmware\n/clients - Connected clients\n/log - Last log entries\n/reboot - Reboot router\n/help - This help"
+    printf "/start - Welcome message\n/status - Full status\n/ram - Memory\n/cpu - CPU Info\n/name - Model and Firmware\n/clients - Connected clients\n/log - Last log entries\n/reboot - Reboot router\n/help - This help"
 }
 
+send_initial_wan_ip
+
 while true; do
+    check_wan_ip_change   # Check WAN IP changes
+    
     OFFSET=$(cat "$OFFSET_FILE")
     UPDATES=$(curl -s "$API/getUpdates?offset=$OFFSET&timeout=10")
     NEW_OFFSET=$(echo "$UPDATES" | grep -o '"update_id":[0-9]*' | tail -1 | awk -F: '{print $2}')
@@ -108,6 +131,7 @@ while true; do
 
     COMMAND=$(echo "$UPDATES" | grep -o '"text":"[^"]*"' | tail -1 | cut -d: -f2 | tr -d '"')
     case "$COMMAND" in
+        "/start") send_msg "🤖 Bot started.\nUse /help to see available commands." ;;
         "/status") send_msg "$(get_status)" ;;
         "/ram") send_msg "$(get_ram)" ;;
         "/cpu") send_msg "$(get_cpu)" ;;
