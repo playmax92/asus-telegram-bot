@@ -43,22 +43,37 @@ get_status() {
     SSID_5=$(nvram get wl1_ssid)
     IF24=$(nvram get wl0_ifname)
     IF5=$(nvram get wl1_ifname)
+
     TEMP_CPU_VAL=$(cat /sys/class/thermal/thermal_zone0/temp | awk '{print int($1/1000)}')
     TEMP_CPU="${TEMP_CPU_VAL}º"
     TEMP_WIFI24=$(wl -i $IF24 phy_tempsense 2>/dev/null | awk '{print $1/2+20"º"}')
     TEMP_WIFI5=$(wl -i $IF5 phy_tempsense 2>/dev/null | awk '{print $1/2+20"º"}')
+
     if [ "$TEMP_CPU_VAL" -gt 60 ]; then
         BANNER="🔥 $MODEL | CPU: $TEMP_CPU 🔥"
     else
         BANNER="❄️ $MODEL | CPU: $TEMP_CPU ❄️"
     fi
-    UPTIME=$(uptime -p)
+
+    # uptime without load average
+    UPTIME_SECONDS=$(cut -d' ' -f1 /proc/uptime | cut -d'.' -f1)
+    DAYS=$((UPTIME_SECONDS/86400))
+    HOURS=$(( (UPTIME_SECONDS%86400)/3600 ))
+    MINUTES=$(( (UPTIME_SECONDS%3600)/60 ))
+    if [ "$DAYS" -gt 0 ]; then
+        UPTIME="${DAYS}d ${HOURS}h ${MINUTES}m"
+    else
+        UPTIME="${HOURS}h ${MINUTES}m"
+    fi
+
+    CPU_LOAD=$(cut -d " " -f1-3 /proc/loadavg)
     RAM_USED_PERCENTAGE=$(free | awk '/Mem:/ {printf "%.2f", $3/$2*100}')
     RAM_FREE_PERCENTAGE=$(free | awk '/Mem:/ {printf "%.2f", $4/$2*100}')
     SWAP_USED=$(free | awk '/Swap:/ {if ($2==0) print "0.00"; else printf "%.2f", $3/$2*100}')
     SIGN_DATE=$(nvram get bwdpi_sig_ver)
-    printf "<b>%s</b>\n\n📊 <b>Status</b>\n- CPU Temp: %s\n- WLAN 2.4 Temp: %s\n- WLAN 5 Temp: %s\n- Uptime: %s\n- RAM Used: %s%% / Free: %s%%\n- Swap Used: %s%%\n\n📃 <b>Info</b>\n- Model: %s\n- Firmware: %s\n- SSID 2.4GHz: %s\n- SSID 5GHz: %s\n- IP WAN: %s\n- IP LAN: %s\n- Trend Micro sign: %s" \
-        "$BANNER" "$TEMP_CPU" "$TEMP_WIFI24" "$TEMP_WIFI5" "$UPTIME" "$RAM_USED_PERCENTAGE" "$RAM_FREE_PERCENTAGE" "$SWAP_USED" "$MODEL" "$FW" "$SSID_24" "$SSID_5" "$WAN_IP" "$LAN_IP" "$SIGN_DATE"
+
+    printf "<b>%s</b>\n\n📊 <b>Status</b>\n- CPU Temp: %s\n- WLAN 2.4 Temp: %s\n- WLAN 5 Temp: %s\n- Uptime: %s\n- Load CPU: %s\n- RAM Used: %s%% / Free: %s%%\n- Swap Used: %s%%\n\n📃 <b>Info</b>\n- Model: %s\n- Firmware: %s\n- SSID 2.4GHz: %s\n- SSID 5GHz: %s\n- IP WAN: %s\n- IP LAN: %s\n- Trend Micro sign: %s" \
+        "$BANNER" "$TEMP_CPU" "$TEMP_WIFI24" "$TEMP_WIFI5" "$UPTIME" "$CPU_LOAD" "$RAM_USED_PERCENTAGE" "$RAM_FREE_PERCENTAGE" "$SWAP_USED" "$MODEL" "$FW" "$SSID_24" "$SSID_5" "$WAN_IP" "$LAN_IP" "$SIGN_DATE"
 }
 
 get_ram() {
