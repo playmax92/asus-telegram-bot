@@ -105,6 +105,8 @@ TELEGRAM_CHAT_ID=123456789
 Convert possible Windows line endings:
 ```sh
 sed -i 's/\r$//' /opt/telegram-bot/bot.sh
+```
+```sh
 sed -i 's/\r$//' /opt/telegram-bot/telegram.env
 ```
 
