@@ -177,6 +177,11 @@ ps | grep bot.sh
 ```
 ---
 
+## Note:
+When you start the bot manually via SSH, it will only run while your SSH session is open. After closing the terminal, the bot stops.
+
+However, thanks to the /jffs/scripts/post-mount script, the bot will start automatically every time the router is rebooted.
+
 ## 📜 Telegram Commands
 
 <img src="https://github.com/playmax92/asus-telegram-bot/blob/b0bad29f20ec6fc509f173f4dc81743eabfe7f9a/Telegram_Output.jpg" style="height: 1000px" /></a>
