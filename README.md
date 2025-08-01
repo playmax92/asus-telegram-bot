@@ -152,16 +152,17 @@ ps | grep bot.sh
 
 <img src="https://github.com/playmax92/asus-telegram-bot/blob/b0bad29f20ec6fc509f173f4dc81743eabfe7f9a/Telegram_Output.jpg" style="height: 1000px" /></a>
 
-| Command      | Description              |
-|--------------|--------------------------|
-| `/status`    | Full router status       |
-| `/ram`       | Memory usage             |
-| `/cpu`       | CPU load and temp        |
-| `/name`      | Router model/firmware    |
-| `/clients`   | Connected clients (DHCP) |
-| `/log`       | View recent log          |
-| `/reboot`    | Reboot router            |
-| `/help`      | Show command list        |
+| Command      | Description                                 |
+|--------------|---------------------------------------------|
+| `/start`     | Welcome message                             |
+| `/status`    | Full router status                          |
+| `/ram`       | Memory usage (RAM and Swap)                 |
+| `/cpu`       | CPU load and temp                           |
+| `/name`      | Router model and firmware                   |
+| `/clients`   | Connected clients (WiFi and LAN separated)  |
+| `/log`       | View recent log  (10 latest messages)       |
+| `/reboot`    | Reboot router                               |
+| `/help`      | Show command list                           |
 
 ---
 
