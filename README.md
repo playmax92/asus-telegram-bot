@@ -134,7 +134,7 @@ Here are the commands you can use:
 
 1. Stop all running bot processes
 ```bash
-killall bot.sh 2>/dev/null
+ps | grep "sh bot.sh" | grep -v grep | awk '{print $1}' | xargs kill -9
 ```
 
 2. Start the bot in the background
