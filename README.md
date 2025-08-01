@@ -113,6 +113,8 @@ sed -i 's/\r$//' /opt/telegram-bot/telegram.env
 Set permissions:
 ```sh
 chmod +x /opt/telegram-bot/bot.sh
+```
+```sh
 chmod 600 /opt/telegram-bot/telegram.env
 ```
 
