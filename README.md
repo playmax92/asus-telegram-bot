@@ -127,7 +127,7 @@ No additional startup scripts are required.
 
 ---
 
-## 🔁 Restarting the Telegram Router Bot
+## 🔁 Restarting the script
 
 Sometimes you may need to restart the bot to apply updates or test changes.  
 Here are the commands you can use:
