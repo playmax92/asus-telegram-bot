@@ -28,7 +28,7 @@ check_wan_ip_change() {
     LAST_IP=$(cat "$WAN_IP_FILE")
     if [ "$CURRENT_IP" != "$LAST_IP" ] && [ -n "$CURRENT_IP" ]; then
         echo "$CURRENT_IP" > "$WAN_IP_FILE"
-        send_msg "🌐 <b>WAN IP changed</b>
+        send_msg "🌐 <b>WAN IP</b>
 Old: $LAST_IP
 New: $CURRENT_IP"
     fi
