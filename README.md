@@ -147,7 +147,7 @@ vi /opt/telegram-bot/telegram.env
   - Press `Esc`
   - Type `:q!` and press **Enter**
 
-Check the file content to make sure there are no extra spaces or hidden characters:
+Convert possible Windows line endings:
 ```bash
 cat /opt/telegram-bot/telegram.env
 ```
