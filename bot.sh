@@ -28,7 +28,9 @@ check_wan_ip_change() {
     LAST_IP=$(cat "$WAN_IP_FILE")
     if [ "$CURRENT_IP" != "$LAST_IP" ] && [ -n "$CURRENT_IP" ]; then
         echo "$CURRENT_IP" > "$WAN_IP_FILE"
-        send_msg "🌐 <b>WAN IP changed</b>\nOld: $LAST_IP\nNew: $CURRENT_IP"
+        send_msg "🌐 <b>WAN IP changed</b>
+Old: $LAST_IP
+New: $CURRENT_IP"
     fi
 }
 
@@ -107,8 +109,7 @@ get_clients() {
         HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
         [ "$HOST" = "*" ] && HOST="Unknown"
         IP=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $3}')
-        WIFI24_LIST="${WIFI24_LIST}- IP: $IP | MAC: $mac | Host: $HOST
-"
+        WIFI24_LIST="${WIFI24_LIST}- IP: $IP | MAC: $mac | Host: $HOST\n"
     done
 
     MAC_5=$(wl -i $IF5 assoclist | awk '{print $2}')
@@ -117,8 +118,7 @@ get_clients() {
         HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
         [ "$HOST" = "*" ] && HOST="Unknown"
         IP=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $3}')
-        WIFI5_LIST="${WIFI5_LIST}- IP: $IP | MAC: $mac | Host: $HOST
-"
+        WIFI5_LIST="${WIFI5_LIST}- IP: $IP | MAC: $mac | Host: $HOST\n"
     done
 
     LAN_LIST=""
@@ -128,19 +128,20 @@ get_clients() {
             if ping -c1 -W1 "$IP" >/dev/null 2>&1; then
                 HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
                 [ "$HOST" = "*" ] && HOST="Unknown"
-                LAN_LIST="${LAN_LIST}- IP: $IP | MAC: $mac | Host: $HOST
-"
+                LAN_LIST="${LAN_LIST}- IP: $IP | MAC: $mac | Host: $HOST\n"
             fi
         fi
     done
 
-    if [ -n "$LAN_LIST" ]; then
-        printf "👥 <b>Clients</b>\n\n<b>Wi-Fi 2.4 GHz:</b>\n%s\n<b>Wi-Fi 5 GHz:</b>\n%s\n<b>LAN:</b>\n%s" \
-            "$WIFI24_LIST" "$WIFI5_LIST" "$LAN_LIST"
-    else
-        printf "👥 <b>Clients</b>\n\n<b>Wi-Fi 2.4 GHz:</b>\n%s\n<b>Wi-Fi 5 GHz:</b>\n%s" \
-            "$WIFI24_LIST" "$WIFI5_LIST"
-    fi
+    MSG="👥 <b>Clients</b>"
+
+    [ -n "$WIFI24_LIST" ] && MSG="${MSG}\n\n<b>Wi-Fi 2.4 GHz:</b>\n$WIFI24_LIST"
+    [ -n "$WIFI5_LIST" ] && MSG="${MSG}\n\n<b>Wi-Fi 5 GHz:</b>\n$WIFI5_LIST"
+    [ -n "$LAN_LIST" ] && MSG="${MSG}\n\n<b>LAN:</b>\n$LAN_LIST"
+
+    [ -z "$WIFI24_LIST" ] && [ -z "$WIFI5_LIST" ] && [ -z "$LAN_LIST" ] && MSG="${MSG}\n\nNo connected clients."
+
+    printf "%s" "$MSG"
 }
 
 get_log() {
@@ -152,7 +153,6 @@ get_log() {
     fi
 
     ESCAPED=$(echo "$LOG" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
-
     printf "📜 <b>Logs</b>\n%s" "$ESCAPED"
 }
 
