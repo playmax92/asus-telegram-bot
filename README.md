@@ -164,6 +164,14 @@ vi /opt/telegram-bot/telegram.env
   - Press `Esc`
   - Type `:q!` and press **Enter**
 
+Or a command in the terminal for copying.
+```bash
+cat > /opt/telegram-bot/telegram.env <<'EOF'
+TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
+TELEGRAM_CHAT_ID=123456789
+EOF
+```
+
 Convert possible Windows line endings:
 ```bash
 cat /opt/telegram-bot/telegram.env
