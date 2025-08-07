@@ -109,7 +109,8 @@ get_clients() {
         HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
         [ "$HOST" = "*" ] && HOST="Unknown"
         IP=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $3}')
-        WIFI24_LIST="${WIFI24_LIST}- IP: $IP | MAC: $mac | Host: $HOST\n"
+        WIFI24_LIST="${WIFI24_LIST}- IP: $IP | MAC: $mac | Host: $HOST
+"
     done
 
     MAC_5=$(wl -i $IF5 assoclist | awk '{print $2}')
@@ -118,7 +119,8 @@ get_clients() {
         HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
         [ "$HOST" = "*" ] && HOST="Unknown"
         IP=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $3}')
-        WIFI5_LIST="${WIFI5_LIST}- IP: $IP | MAC: $mac | Host: $HOST\n"
+        WIFI5_LIST="${WIFI5_LIST}- IP: $IP | MAC: $mac | Host: $HOST
+"
     done
 
     LAN_LIST=""
@@ -128,18 +130,32 @@ get_clients() {
             if ping -c1 -W1 "$IP" >/dev/null 2>&1; then
                 HOST=$(grep -i "$mac" /var/lib/misc/dnsmasq.leases | awk '{print $4}')
                 [ "$HOST" = "*" ] && HOST="Unknown"
-                LAN_LIST="${LAN_LIST}- IP: $IP | MAC: $mac | Host: $HOST\n"
+                LAN_LIST="${LAN_LIST}- IP: $IP | MAC: $mac | Host: $HOST
+"
             fi
         fi
     done
 
     MSG="👥 <b>Clients</b>"
 
-    [ -n "$WIFI24_LIST" ] && MSG="${MSG}\n\n<b>Wi-Fi 2.4 GHz:</b>\n$WIFI24_LIST"
-    [ -n "$WIFI5_LIST" ] && MSG="${MSG}\n\n<b>Wi-Fi 5 GHz:</b>\n$WIFI5_LIST"
-    [ -n "$LAN_LIST" ] && MSG="${MSG}\n\n<b>LAN:</b>\n$LAN_LIST"
+    [ -n "$WIFI24_LIST" ] && MSG="${MSG}
 
-    [ -z "$WIFI24_LIST" ] && [ -z "$WIFI5_LIST" ] && [ -z "$LAN_LIST" ] && MSG="${MSG}\n\nNo connected clients."
+<b>Wi-Fi 2.4 GHz:</b>
+$WIFI24_LIST"
+
+    [ -n "$WIFI5_LIST" ] && MSG="${MSG}
+
+<b>Wi-Fi 5 GHz:</b>
+$WIFI5_LIST"
+
+    [ -n "$LAN_LIST" ] && MSG="${MSG}
+
+<b>LAN:</b>
+$LAN_LIST"
+
+    [ -z "$WIFI24_LIST" ] && [ -z "$WIFI5_LIST" ] && [ -z "$LAN_LIST" ] && MSG="${MSG}
+
+No connected clients."
 
     printf "%s" "$MSG"
 }
