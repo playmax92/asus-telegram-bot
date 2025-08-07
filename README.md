@@ -152,6 +152,11 @@ Check the file content to make sure there are no extra spaces or hidden characte
 cat /opt/telegram-bot/telegram.env
 ```
 
+Set permissions:
+```sh
+chmod 600 /opt/telegram-bot/telegram.env
+```
+
 ---
 
 ## ✅ Auto-start on Boot
