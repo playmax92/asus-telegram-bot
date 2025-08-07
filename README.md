@@ -65,6 +65,24 @@ swapon /dev/sda2
 /opt/telegram-bot/bot.sh &
 ```
 
+Or a command in the terminal for copying.
+
+```sh
+cat > /jffs/scripts/post-mount <<'EOF'
+#!/bin/sh
+# Mount USB partitions
+mkdir -p /opt
+mkdir -p /home/ftp
+mount /tmp/mnt/sda1 /opt
+mount /tmp/mnt/sda3 /home/ftp
+swapon /dev/sda2
+
+# Start Telegram Bot
+/opt/telegram-bot/bot.sh &
+EOF
+```
+
+
 Convert possible Windows line endings:
 ```sh
 sed -i 's/\r$//' /jffs/scripts/post-mount
