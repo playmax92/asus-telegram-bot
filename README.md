@@ -83,7 +83,7 @@ Create the bot folder:
 mkdir -p /opt/telegram-bot
 ```
 
-Add these two files to `/opt/telegram-bot/`: `bot.sh` and `telegram.env`
+Add these two files `bot.sh` and `telegram.env` to `/opt/telegram-bot/`:
 
 Go to bot directory
 ```sh
