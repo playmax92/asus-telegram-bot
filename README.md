@@ -22,7 +22,6 @@ A lightweight shell-based Telegram bot to monitor your ASUS router running Fresh
 - ASUS router with [FreshTomato firmware](https://freshtomato.org/)  
 - USB drive (min. **4 GB** recommended) formatted as **Ext4** with **swap enabled**
 - SSH access to the router
-- `curl` utility (built-in)
 
 ---
 
