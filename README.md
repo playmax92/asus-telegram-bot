@@ -47,12 +47,11 @@ Via web UI:
 
 ### 3. Create post-mount Script
 
-Create the script in`/jffs/scripts/post-mount`
-
 Create the script file:
 ```sh
 touch /jffs/scripts/post-mount
 ```
+Copy the script in`/jffs/scripts/post-mount`:
 
 ```sh
 #!/bin/sh
