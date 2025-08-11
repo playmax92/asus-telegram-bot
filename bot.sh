@@ -17,10 +17,7 @@ WAN_IP_FILE="/opt/telegram-bot/wan_ip_last"
 
 send_msg() {
     TEXT="$1"
-    curl -s -X POST "$API/sendMessage" \
-        -d chat_id="$TELEGRAM_CHAT_ID" \
-        -d parse_mode="HTML" \
-        -d text="$TEXT" >/dev/null
+    curl -s -X POST "$API/sendMessage"         -d chat_id="$TELEGRAM_CHAT_ID"         -d parse_mode="HTML"         -d text="$TEXT" >/dev/null
 }
 
 check_wan_ip_change() {
@@ -73,22 +70,44 @@ get_status() {
     SWAP_USED=$(free | awk '/Swap:/ {if ($2==0) print "0.00"; else printf "%.2f", $3/$2*100}')
     SIGN_DATE=$(nvram get bwdpi_sig_ver)
 
-    printf "<b>%s</b>\n\n📊 <b>Status</b>\n- CPU Temp: %s\n- WLAN 2.4 Temp: %s\n- WLAN 5 Temp: %s\n- Uptime: %s\n- Load CPU: %s\n- RAM Used: %s%% / Free: %s%%\n- Swap Used: %s%%\n\n📃 <b>Info</b>\n- Model: %s\n- Firmware: %s\n- SSID 2.4GHz: %s\n- SSID 5GHz: %s\n- IP WAN: %s\n- IP LAN: %s\n- Trend Micro sign: %s" \
-        "$BANNER" "$TEMP_CPU" "$TEMP_WIFI24" "$TEMP_WIFI5" "$UPTIME" "$CPU_LOAD" "$RAM_USED_PERCENTAGE" "$RAM_FREE_PERCENTAGE" "$SWAP_USED" "$MODEL" "$FW" "$SSID_24" "$SSID_5" "$WAN_IP" "$LAN_IP" "$SIGN_DATE"
+    printf "<b>%s</b>
+
+📊 <b>Status</b>
+- CPU Temp: %s
+- WLAN 2.4 Temp: %s
+- WLAN 5 Temp: %s
+- Uptime: %s
+- Load CPU: %s
+- RAM Used: %s%% / Free: %s%%
+- Swap Used: %s%%
+
+📃 <b>Info</b>
+- Model: %s
+- Firmware: %s
+- SSID 2.4GHz: %s
+- SSID 5GHz: %s
+- IP WAN: %s
+- IP LAN: %s
+- Trend Micro sign: %s"         "$BANNER" "$TEMP_CPU" "$TEMP_WIFI24" "$TEMP_WIFI5" "$UPTIME" "$CPU_LOAD" "$RAM_USED_PERCENTAGE" "$RAM_FREE_PERCENTAGE" "$SWAP_USED" "$MODEL" "$FW" "$SSID_24" "$SSID_5" "$WAN_IP" "$LAN_IP" "$SIGN_DATE"
 }
 
 get_ram() {
     RAM_USED=$(free | awk '/Mem:/ {printf "%.2f", $3/$2*100}')
     RAM_FREE=$(free | awk '/Mem:/ {printf "%.2f", $4/$2*100}')
     SWAP_USED=$(free | awk '/Swap:/ {if ($2==0) print "0.00"; else printf "%.2f", $3/$2*100}')
-    printf "🧠 <b>RAM</b>\n- Used: %s%%\n- Free: %s%%\n- Swap Used: %s%%" "$RAM_USED" "$RAM_FREE" "$SWAP_USED"
+    printf "🧠 <b>RAM</b>
+- Used: %s%%
+- Free: %s%%
+- Swap Used: %s%%" "$RAM_USED" "$RAM_FREE" "$SWAP_USED"
 }
 
 get_cpu() {
     TEMP_CPU_VAL=$(cat /sys/class/thermal/thermal_zone0/temp | awk '{print int($1/1000)}')
     TEMP_CPU="${TEMP_CPU_VAL}º"
     LOAD=$(cut -d " " -f1-3 /proc/loadavg)
-    printf "🖥 <b>CPU</b>\n- Load: %s\n- Temp: %s" "$LOAD" "$TEMP_CPU"
+    printf "🖥 <b>CPU</b>
+- Load: %s
+- Temp: %s" "$LOAD" "$TEMP_CPU"
 }
 
 get_name() {
@@ -96,7 +115,9 @@ get_name() {
     FW_MAIN=$(nvram get firmver)
     FW_BUILD=$(nvram get buildno)
     FW="${FW_MAIN}.${FW_BUILD}"
-    printf "📡 <b>Router</b>\n- Model: %s\n- Firmware: %s" "$MODEL" "$FW"
+    printf "📡 <b>Router</b>
+- Model: %s
+- Firmware: %s" "$MODEL" "$FW"
 }
 
 get_clients() {
@@ -169,7 +190,8 @@ get_log() {
     fi
 
     ESCAPED=$(echo "$LOG" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
-    printf "📜 <b>Logs</b>\n%s" "$ESCAPED"
+    printf "📜 <b>Logs</b>
+%s" "$ESCAPED"
 }
 
 do_reboot() {
@@ -178,8 +200,19 @@ do_reboot() {
 }
 
 get_help() {
-    printf "/start - Welcome message\n/status - Full status\n/ram - Memory\n/cpu - CPU Info\n/name - Model and Firmware\n/clients - Connected clients\n/log - Last log entries\n/reboot - Reboot router\n/help - This help"
+    printf "/start - Welcome message
+/status - Full status
+/ram - Memory
+/cpu - CPU Info
+/name - Model and Firmware
+/clients - Connected clients
+/log - Last log entries
+/reboot - Reboot router
+/help - This help"
 }
+
+# При старте отправляем сообщение
+send_msg "🚀 Router bot запущен и готов к работе."
 
 while true; do
     check_wan_ip_change
