@@ -62,7 +62,7 @@ mount /tmp/mnt/sda3 /home/ftp
 swapon /dev/sda2
 
 # Start Telegram Bot
-/opt/telegram-bot/bot.sh &
+/tmp/mnt/sdb1/telegram-bot/bot.sh &
 ```
 
 Or a command in the terminal for copying.
