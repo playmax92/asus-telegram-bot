@@ -100,7 +100,7 @@ Create the bot folder:
 mkdir -p /opt/telegram-bot
 ```
 
-Add these two files `bot.sh` and `telegram.env` to `/opt/telegram-bot/`:
+Add these two files `bot.sh` and `telegram.env` to `/tmp/mnt/sdb1/telegram-bot/`:
 
 Go to bot directory
 ```sh
@@ -121,18 +121,18 @@ Don't forget to put your credentials in the file `telegram.env`
 
 Convert possible Windows line endings:
 ```sh
-sed -i 's/\r$//' /opt/telegram-bot/bot.sh
+sed -i 's/\r$//' /tmp/mnt/sdb1/telegram-bot/bot.sh
 ```
 ```sh
-sed -i 's/\r$//' /opt/telegram-bot/telegram.env
+sed -i 's/\r$//' /tmp/mnt/sdb1/telegram-bot/telegram.env
 ```
 
 Set permissions:
 ```sh
-chmod +x /opt/telegram-bot/bot.sh
+chmod +x /tmp/mnt/sdb1/telegram-bot/bot.sh
 ```
 ```sh
-chmod 600 /opt/telegram-bot/telegram.env
+chmod 600 /tmp/mnt/sdb1/telegram-bot/telegram.env
 ```
 
 ---
@@ -148,7 +148,7 @@ TELEGRAM_CHAT_ID=123456789
 On the router, the only available text editor is **vi**.  
 To edit the file:
 ```bash
-vi /opt/telegram-bot/telegram.env
+vi /tmp/mnt/sdb1/telegram-bot/telegram.env
 ```
 
 **Basic vi commands:**
