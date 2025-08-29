@@ -190,7 +190,7 @@ Here are the commands you can use:
 
 1. Stop all running bot processes
 ```bash
-ps | grep "[b]ot.sh" | awk '{print $1}' | xargs kill -9
+kill -9 $(ps | grep "[b]ot.sh" | awk '{print $1}')
 ```
 
 2. Start the bot in the background
