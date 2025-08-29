@@ -17,17 +17,28 @@ WAN_IP_FILE="/opt/telegram-bot/wan_ip_last"
 
 send_msg() {
     TEXT="$1"
-    curl -s -X POST "$API/sendMessage"         -d chat_id="$TELEGRAM_CHAT_ID"         -d parse_mode="HTML"         -d text="$TEXT" >/dev/null
+    curl -s -X POST "$API/sendMessage" \
+        -d chat_id="$TELEGRAM_CHAT_ID" \
+        -d parse_mode="HTML" \
+        -d text="$TEXT" >/dev/null
 }
 
 check_wan_ip_change() {
     CURRENT_IP=$(nvram get wan0_ipaddr)
-    LAST_IP=$(cat "$WAN_IP_FILE")
-    if [ "$CURRENT_IP" != "$LAST_IP" ] && [ -n "$CURRENT_IP" ]; then
-        echo "$CURRENT_IP" > "$WAN_IP_FILE"
-        send_msg "🌐 <b>WAN IP</b>
+
+    # Проверяем что IP не пустой и корректный
+    if echo "$CURRENT_IP" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'; then
+        LAST_IP=$(cat "$WAN_IP_FILE")
+
+        if [ "$CURRENT_IP" != "$LAST_IP" ]; then
+            echo "$CURRENT_IP" > "$WAN_IP_FILE"
+
+            [ -z "$LAST_IP" ] && LAST_IP="N/A"
+
+            send_msg "🌐 <b>WAN IP</b>
 Old: $LAST_IP
 New: $CURRENT_IP"
+        fi
     fi
 }
 
@@ -88,7 +99,10 @@ get_status() {
 - SSID 5GHz: %s
 - IP WAN: %s
 - IP LAN: %s
-- Trend Micro sign: %s"         "$BANNER" "$TEMP_CPU" "$TEMP_WIFI24" "$TEMP_WIFI5" "$UPTIME" "$CPU_LOAD" "$RAM_USED_PERCENTAGE" "$RAM_FREE_PERCENTAGE" "$SWAP_USED" "$MODEL" "$FW" "$SSID_24" "$SSID_5" "$WAN_IP" "$LAN_IP" "$SIGN_DATE"
+- Trend Micro sign: %s" \
+        "$BANNER" "$TEMP_CPU" "$TEMP_WIFI24" "$TEMP_WIFI5" "$UPTIME" "$CPU_LOAD" \
+        "$RAM_USED_PERCENTAGE" "$RAM_FREE_PERCENTAGE" "$SWAP_USED" \
+        "$MODEL" "$FW" "$SSID_24" "$SSID_5" "$WAN_IP" "$LAN_IP" "$SIGN_DATE"
 }
 
 get_ram() {
