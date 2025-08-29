@@ -2,17 +2,17 @@
 
 # Developed by playmax92
 
-. /opt/telegram-bot/telegram.env
+. /tmp/mnt/sdb1/telegram-bot/telegram.env
 if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
     echo "No Telegram data (TOKEN or CHAT_ID)"
     exit 1
 fi
 
 API="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}"
-OFFSET_FILE="/opt/telegram-bot/bot_offset"
+OFFSET_FILE="/tmp/mnt/sdb1/telegram-bot/bot_offset"
 [ -f "$OFFSET_FILE" ] || echo 0 > "$OFFSET_FILE"
 
-WAN_IP_FILE="/opt/telegram-bot/wan_ip_last"
+WAN_IP_FILE="/tmp/mnt/sdb1/telegram-bot/wan_ip_last"
 [ -f "$WAN_IP_FILE" ] || echo "" > "$WAN_IP_FILE"
 
 send_msg() {
