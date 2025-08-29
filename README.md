@@ -78,7 +78,7 @@ mount /tmp/mnt/sda3 /home/ftp
 swapon /dev/sda2
 
 # Start Telegram Bot
-/opt/telegram-bot/bot.sh &
+/tmp/mnt/sdb1/telegram-bot/bot.sh &
 EOF
 ```
 
@@ -97,7 +97,7 @@ chmod +x /jffs/scripts/post-mount
 
 Create the bot folder:
 ```sh
-mkdir -p /opt/telegram-bot
+mkdir -p /tmp/mnt/sdb1/telegram-bot
 ```
 
 Add these two files `bot.sh` and `telegram.env` to `/tmp/mnt/sdb1/telegram-bot/`:
