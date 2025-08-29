@@ -104,7 +104,7 @@ Add these two files `bot.sh` and `telegram.env` to `/opt/telegram-bot/`:
 
 Go to bot directory
 ```sh
-cd /opt/telegram-bot
+cd /tmp/mnt/sdb1/telegram-bot
 ```
 
 Download bot.sh
@@ -195,7 +195,7 @@ ps | grep "[b]ot.sh" | awk '{print $1}' | xargs kill -9
 
 2. Start the bot in the background
 ```bash
-cd /opt/telegram-bot && sh bot.sh &
+nohup sh bot.sh >/tmp/mnt/sdb1/telegram-bot/bot.log 2>&1 &
 ```
 
 3. Verify that the bot is running
