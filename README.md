@@ -1,4 +1,4 @@
-<a href="https://www.paypal.com/donate/?hosted_button_id=ТВОЄ_НОВЕ_ID" 
+<a href="https://www.paypal.com/donate/?hosted_button_id=M8QUBR2LRTBR6" 
    target="_blank" 
    rel="noopener noreferrer">
   <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" 
