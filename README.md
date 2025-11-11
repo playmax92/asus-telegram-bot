@@ -1,5 +1,13 @@
-<a href="https://www.paypal.com/donate/?hosted_button_id=M8QUBR2LRTBR6" target="_blank">
-<img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="Donate" style="height: 30px !important;" align="right" /></a><br/>
+<a href="https://www.paypal.com/donate/?hosted_button_id=M8QUBR2LRTBR6" 
+   target="_blank" 
+   rel="noopener noreferrer" 
+   style="display:inline-block; float:right; margin-top:5px;">
+  <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" 
+       alt="Donate with PayPal" 
+       title="Support via PayPal" 
+       style="height:30px; border:none;">
+</a>
+<br clear="both">
 
 # Telegram Bot for ASUS Routers (FreshTomato)
 
